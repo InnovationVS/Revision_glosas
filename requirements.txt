@@ -1,5 +1,5 @@
 streamlit
 pandas 
-re
-io
+xlsxwriter>=3.0.0
+openpyxl
 zipfile
