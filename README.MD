@@ -20,7 +20,7 @@
 - **Alertas interactivas:** Notifica si el documento cumple con el formato esperado,si esta presente en el Excel o si no se encuentra disponible
 - **Generación de ZIP:** Los archivos validados se alamcenan temporalmente y se comprimen en un archivo ZIP listo para ser descargado
 
-[!IMPORTANT]
+> _[!IMPORTANT]_
 - **Python 3.8+**
 - **Streamlit**
 - **Pandas**
