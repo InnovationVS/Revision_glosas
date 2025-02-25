@@ -25,27 +25,38 @@ uploaded_excel = st.file_uploader("Sube el archivo Excel con los datos", type=["
 excel_bill = None
 if uploaded_excel:
     excel_bill = extract_EPS(uploaded_excel)
-    st.write("Facturas cargadas:", excel_bill)
+    st.write(f"✅ **Facturas cargadas:** {len(excel_bill)}")
 
 # found documents
 found_documents = []
+not_found_documents = []
 
 # upload PDF files
 uploaded_files = st.file_uploader("Sube los documentos (PDF)", type=["pdf"], accept_multiple_files=True)
 if uploaded_files:
     if excel_bill is None:
-        st.error("Por favor, sube primero el archivo Excel para comparar las facturas.")
+        st.error(f"⚠️Por favor, sube primero el archivo Excel para comparar las facturas.⚠️")
     else:
+        results = []
         for file in uploaded_files:
             num_bill = extract_number(file.name)
             if num_bill is None:
-                st.warning(f"{file.name}: Formato no valido")
+                results.append({"Archivo": file.name, "Estado": "⚠️ Formato no válido"})
             elif num_bill in excel_bill:
-                st.success(f"{file.name}: Archivo disponible y agregado")
+                results.append({"Archivo": file.name, "Estado":"✅ Disponible y agregado"})
                 file.seek(0) # File read from the beginning
                 found_documents.append((file.name, file.read()))
             else:
-                st.error(f"{file.name}: Ese archvio no se encuentra disponible")
+                results.append({"Archivo": file.name, "Estado":"❌ No disponible"})
+                not_found_documents.append(file.name)
+                
+        st.table(pd.DataFrame(results))
+        
+        total_found = len(found_documents)
+        total_not_found = len(not_found_documents)
+        st.write(f"📂 **Total archivos encontrados:** {total_found}")
+        st.write(f"🚫 **Total archivos no encontrados:** {total_not_found}")
+        
 if st.button("Generar ZIP"):
     if found_documents:
         zip_buffer = io.BytesIO()
